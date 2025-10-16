@@ -28,10 +28,11 @@ struct StationDistance: Identifiable, Hashable {
 
 struct LineArrival: Identifiable, Hashable {
     let line: String
+    let destination: String
     let arrivals: [Date]
     let alerts: [ServiceAlert]
 
-    var id: String { line }
+    var id: String { "\(line)::\(destination)" }
 }
 
 struct StationRealtime: Identifiable, Hashable {

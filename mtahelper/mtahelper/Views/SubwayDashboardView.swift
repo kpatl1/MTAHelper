@@ -160,7 +160,7 @@ private struct StationCardView: View {
         VStack(alignment: .leading, spacing: 18) {
             header
 
-            ForEach(stationRealtime.lineArrivals) { arrival in
+            ForEach(stationRealtime.lineArrivals.filter { !$0.arrivals.isEmpty }) { arrival in
                 LineArrivalRow(arrival: arrival)
             }
         }
@@ -209,10 +209,10 @@ private struct LineArrivalRow: View {
                 LineBadge(line: arrival.line)
 
                 VStack(alignment: .leading, spacing: 4) {
-                    Text(arrivalStatus)
+                    Text("\(arrival.destination)")
                         .font(.headline)
                         .foregroundStyle(.white)
-                    Text(arrivalSubtitle)
+                    Text(departureTimesText)
                         .font(.caption)
                         .foregroundStyle(.white.opacity(0.7))
                 }
@@ -229,17 +229,13 @@ private struct LineArrivalRow: View {
         }
     }
 
-    private var arrivalStatus: String {
+    private var departureTimesText: String {
         guard !arrival.arrivals.isEmpty else {
-            return "No live arrival times"
+            return "No upcoming departures"
         }
         return arrival.arrivals
             .map { upcomingString(for: $0) }
-            .joined(separator: " • ")
-    }
-
-    private var arrivalSubtitle: String {
-        arrival.arrivals.isEmpty ? "Check posted schedules" : "Next trains"
+            .joined(separator: ", ")
     }
 }
 

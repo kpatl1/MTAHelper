@@ -3,6 +3,8 @@ import Foundation
 struct NearestStationSnapshot: Codable, Hashable {
     struct Line: Codable, Hashable {
         let id: String
+        let line: String
+        let destination: String
         let arrivals: [Date]
     }
 
@@ -71,9 +73,24 @@ extension NearestStationSnapshot {
         stationName: "14 St - Union Sq",
         distance: 120,
         lines: [
-            .init(id: "4", arrivals: [Date().addingTimeInterval(180), Date().addingTimeInterval(480)]),
-            .init(id: "5", arrivals: [Date().addingTimeInterval(240)]),
-            .init(id: "6", arrivals: [Date().addingTimeInterval(360)])
+            .init(
+                id: "4::Woodlawn",
+                line: "4",
+                destination: "Woodlawn",
+                arrivals: [Date().addingTimeInterval(180), Date().addingTimeInterval(480)]
+            ),
+            .init(
+                id: "5::Bowling Green",
+                line: "5",
+                destination: "Bowling Green",
+                arrivals: [Date().addingTimeInterval(240)]
+            ),
+            .init(
+                id: "6::Brooklyn Bridge-City Hall",
+                line: "6",
+                destination: "Brooklyn Bridge-City Hall",
+                arrivals: [Date().addingTimeInterval(360)]
+            )
         ],
         lastUpdated: Date()
     )

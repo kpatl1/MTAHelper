@@ -22,6 +22,11 @@ enum RealtimeServiceError: LocalizedError {
 }
 
 final class RealtimeService {
+    private struct LineDestinationKey: Hashable {
+        let line: String
+        let destination: String
+    }
+
     private let session: URLSession
     private let stationRepository: StationRepository
 
@@ -43,7 +48,7 @@ final class RealtimeService {
             }
         }
 
-        var predictions: [String: [String: Set<Date>]] = [:]
+        var predictions: [String: [LineDestinationKey: Set<Date>]] = [:]
 
         try await withThrowingTaskGroup(of: (MTAFeed, GTFSRealtimeFeed).self) { group in
             for feed in feeds {
@@ -60,7 +65,10 @@ final class RealtimeService {
                         continue
                     }
 
-                    for stopUpdate in trip.stopTimeUpdates {
+                    let orderedStops = sortStopUpdates(trip.stopTimeUpdates)
+                    let tripDestination = resolveDestinationName(from: orderedStops)
+
+                    for stopUpdate in orderedStops {
                         guard let stopID = stopUpdate.stopID,
                               let parentID = stationRepository.parentStationID(for: stopID),
                               targetStationIDs.contains(parentID) else {
@@ -71,7 +79,9 @@ final class RealtimeService {
                             continue
                         }
 
-                        predictions[parentID, default: [:]][routeID, default: []].insert(date)
+                        let destination = tripDestination ?? fallbackDirectionDescription(for: stopID, line: routeID)
+                        let key = LineDestinationKey(line: routeID, destination: destination)
+                        predictions[parentID, default: [:]][key, default: []].insert(date)
                     }
                 }
             }
@@ -82,12 +92,21 @@ final class RealtimeService {
         return stationDistances.map { stationDistance in
             let station = stationDistance.station
             let rawArrivals = predictions[station.id] ?? [:]
+            let threshold = now.addingTimeInterval(-30)
 
-            let arrivals: [LineArrival] = station.lines.map { line in
-                let key = line.uppercased()
-                let times = rawArrivals[key] ?? []
-                let upcoming = Array(times.filter { $0 > now }).sorted().prefix(3)
-                return LineArrival(line: line, arrivals: Array(upcoming), alerts: [])
+            let arrivals: [LineArrival] = rawArrivals.compactMap { entry -> LineArrival? in
+                let key = entry.key
+                let times = entry.value.filter { $0 >= threshold }
+                guard !times.isEmpty else { return nil }
+                let upcoming = Array(times.sorted().prefix(2))
+                return LineArrival(line: key.line, destination: key.destination, arrivals: upcoming, alerts: [])
+            }
+            .sorted { lhs, rhs in
+                let lineComparison = lhs.line.localizedCaseInsensitiveCompare(rhs.line)
+                if lineComparison != .orderedSame {
+                    return lineComparison == .orderedAscending
+                }
+                return lhs.destination.localizedCaseInsensitiveCompare(rhs.destination) == .orderedAscending
             }
 
             return StationRealtime(station: station, distance: stationDistance.distance, lineArrivals: arrivals)
@@ -110,5 +129,56 @@ final class RealtimeService {
         }
 
         return data
+    }
+
+    private func sortStopUpdates(_ updates: [GTFSRealtimeStopTimeUpdate]) -> [GTFSRealtimeStopTimeUpdate] {
+        updates.enumerated().sorted { lhs, rhs in
+            switch (lhs.element.stopSequence, rhs.element.stopSequence) {
+            case let (l?, r?):
+                if l == r {
+                    return lhs.offset < rhs.offset
+                }
+                return l < r
+            case (_?, nil):
+                return true
+            case (nil, _?):
+                return false
+            default:
+                return lhs.offset < rhs.offset
+            }
+        }
+        .map(\.element)
+    }
+
+    private func resolveDestinationName(from updates: [GTFSRealtimeStopTimeUpdate]) -> String? {
+        guard let stopID = updates.last(where: { $0.stopID != nil })?.stopID else {
+            return nil
+        }
+
+        guard let parentID = stationRepository.parentStationID(for: stopID),
+              let station = stationRepository.station(for: parentID) else {
+            return nil
+        }
+
+        return station.name
+    }
+
+    private func fallbackDirectionDescription(for stopID: String, line: String) -> String {
+        guard let suffix = stopID.last else {
+            return "\(line) service"
+        }
+
+        switch suffix {
+        case "N":
+            return "Northbound"
+        case "S":
+            return "Southbound"
+        case "E":
+            return "Eastbound"
+        case "W":
+            return "Westbound"
+        default:
+            return "\(line) service"
+        }
     }
 }

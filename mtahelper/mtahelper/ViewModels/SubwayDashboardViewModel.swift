@@ -109,7 +109,12 @@ final class SubwayDashboardViewModel: ObservableObject {
                         let lineAlerts = activeAlerts.filter { $0.lines.contains(arrival.line.uppercased()) }
                         let combined = Array(Set(lineAlerts + stationParentAlerts)).sorted { $0.title < $1.title }
                         relevantAlertSet.formUnion(lineAlerts)
-                        return LineArrival(line: arrival.line, arrivals: arrival.arrivals, alerts: combined)
+                        return LineArrival(
+                            line: arrival.line,
+                            destination: arrival.destination,
+                            arrivals: arrival.arrivals,
+                            alerts: combined
+                        )
                     }
 
                     return StationRealtime(
@@ -193,6 +198,11 @@ private extension SubwayDashboardViewModel {
         }
     }
 
+    struct LineKey: Hashable {
+        let line: String
+        let destination: String
+    }
+
     struct LineAggregate {
         var arrivals: Set<Date> = []
         var alerts: Set<ServiceAlert> = []
@@ -204,32 +214,37 @@ private extension SubwayDashboardViewModel {
         return grouped.values.compactMap { group in
             guard let nearest = group.min(by: { $0.distance < $1.distance }) else { return nil }
 
-            var allLines: Set<String> = []
-            var aggregates: [String: LineAggregate] = [:]
+            let allLines = Set(group.flatMap { $0.station.lines })
+            var aggregates: [LineKey: LineAggregate] = [:]
 
             for entry in group {
-                allLines.formUnion(entry.station.lines)
-
                 for arrival in entry.lineArrivals {
-                    var aggregate = aggregates[arrival.line] ?? LineAggregate()
+                    let key = LineKey(line: arrival.line, destination: arrival.destination)
+                    var aggregate = aggregates[key] ?? LineAggregate()
                     aggregate.arrivals.formUnion(arrival.arrivals)
                     aggregate.alerts.formUnion(arrival.alerts)
-                    aggregates[arrival.line] = aggregate
+                    aggregates[key] = aggregate
                 }
             }
 
-            for line in allLines where aggregates[line] == nil {
-                aggregates[line] = LineAggregate()
-            }
-
-            let combinedArrivals: [LineArrival] = aggregates.map { line, aggregate in
+            let combinedArrivals: [LineArrival] = aggregates.compactMap { key, aggregate in
                 let sortedArrivals = Array(aggregate.arrivals).sorted()
-                let limitedArrivals = Array(sortedArrivals.prefix(3))
+                let limitedArrivals = Array(sortedArrivals.prefix(2))
+                guard !limitedArrivals.isEmpty else { return nil }
                 let alerts = Array(aggregate.alerts).sorted { $0.title < $1.title }
-                return LineArrival(line: line, arrivals: limitedArrivals, alerts: alerts)
+                return LineArrival(
+                    line: key.line,
+                    destination: key.destination,
+                    arrivals: limitedArrivals,
+                    alerts: alerts
+                )
             }
             .sorted { lhs, rhs in
-                lhs.line.localizedCaseInsensitiveCompare(rhs.line) == .orderedAscending
+                let lineComparison = lhs.line.localizedCaseInsensitiveCompare(rhs.line)
+                if lineComparison != .orderedSame {
+                    return lineComparison == .orderedAscending
+                }
+                return lhs.destination.localizedCaseInsensitiveCompare(rhs.destination) == .orderedAscending
             }
 
             let combinedStation = Station(
@@ -256,11 +271,15 @@ private extension SubwayDashboardViewModel {
             return
         }
 
-        let lines: [NearestStationSnapshot.Line] = nearest.lineArrivals.map { arrival in
+        let lines: [NearestStationSnapshot.Line] = nearest.lineArrivals.compactMap { arrival in
             let upcoming = arrival.arrivals.filter { $0 >= lastUpdated.addingTimeInterval(-30) }
+            let limited = Array(upcoming.prefix(2))
+            guard !limited.isEmpty else { return nil }
             return NearestStationSnapshot.Line(
-                id: arrival.line,
-                arrivals: Array(upcoming.prefix(3))
+                id: "\(arrival.line)::\(arrival.destination)",
+                line: arrival.line,
+                destination: arrival.destination,
+                arrivals: limited
             )
         }
 
@@ -269,7 +288,10 @@ private extension SubwayDashboardViewModel {
             stationName: nearest.station.name,
             distance: nearest.distance,
             lines: lines.sorted { lhs, rhs in
-                lhs.id.localizedCaseInsensitiveCompare(rhs.id) == .orderedAscending
+                if lhs.line.caseInsensitiveCompare(rhs.line) == .orderedSame {
+                    return lhs.destination.localizedCaseInsensitiveCompare(rhs.destination) == .orderedAscending
+                }
+                return lhs.line.localizedCaseInsensitiveCompare(rhs.line) == .orderedAscending
             },
             lastUpdated: lastUpdated
         )

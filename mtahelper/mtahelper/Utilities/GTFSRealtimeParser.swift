@@ -22,6 +22,7 @@ struct GTFSRealtimeStopTimeUpdate {
     let stopID: String?
     let arrival: GTFSRealtimeEvent?
     let departure: GTFSRealtimeEvent?
+    let stopSequence: Int?
 }
 
 struct GTFSRealtimeEvent {
@@ -133,6 +134,7 @@ enum GTFSRealtimeParser {
         var stopID: String?
         var arrival: GTFSRealtimeEvent?
         var departure: GTFSRealtimeEvent?
+        var stopSequence: Int?
 
         while let field = decoder.nextField() {
             switch field.number {
@@ -143,8 +145,9 @@ enum GTFSRealtimeParser {
                 guard case .lengthDelimited(let payload) = field.value else { continue }
                 departure = parseEvent(data: payload)
             case 3:
-                // stop_sequence (ignored)
-                continue
+                if let value = field.value.int64Value {
+                    stopSequence = Int(value)
+                }
             case 4:
                 if let string = field.value.stringValue {
                     stopID = string
@@ -158,7 +161,7 @@ enum GTFSRealtimeParser {
             return nil
         }
 
-        return GTFSRealtimeStopTimeUpdate(stopID: stopID, arrival: arrival, departure: departure)
+        return GTFSRealtimeStopTimeUpdate(stopID: stopID, arrival: arrival, departure: departure, stopSequence: stopSequence)
     }
 
     private static func parseEvent(data: Data) -> GTFSRealtimeEvent {

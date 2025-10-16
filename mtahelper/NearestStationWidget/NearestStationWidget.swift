@@ -93,8 +93,8 @@ struct NearestStationWidgetEntryView: View {
 
                 ForEach(snapshot.lines.prefix(lineLimit), id: \.id) { line in
                     HStack(spacing: 5) {
-                        lineBadge(for: line.id, compact: family == .systemSmall)
-                        Text(arrivalText(for: line, limit: arrivalLimit))
+                        lineBadge(for: line.line, compact: family == .systemSmall)
+                        Text("\(line.destination): \(arrivalText(for: line, limit: arrivalLimit))")
                             .font(.system(size: family == .systemSmall ? 10.5 : 11.5))
                             .foregroundStyle(.secondary)
                             .lineLimit(1)
