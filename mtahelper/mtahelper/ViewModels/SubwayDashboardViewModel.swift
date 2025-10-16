@@ -126,9 +126,11 @@ final class SubwayDashboardViewModel: ObservableObject {
                 self.startAutoRefresh()
                 self.activeAlerts = Array(relevantAlertSet).sorted { $0.title < $1.title }
                 self.phase = mergedStations.isEmpty ? .error("No arrivals found within a mile. Try refreshing.") : .ready
+                self.persistWidgetSnapshot(from: self.stations, lastUpdated: now)
             } catch {
                 if Task.isCancelled { return }
                 self.phase = .error(error.localizedDescription)
+                WidgetDataStore.clear()
             }
         }
     }
@@ -237,5 +239,33 @@ private extension SubwayDashboardViewModel {
                 lineArrivals: combinedArrivals
             )
         }
+    }
+}
+
+private extension SubwayDashboardViewModel {
+    func persistWidgetSnapshot(from stations: [StationRealtime], lastUpdated: Date) {
+        guard let nearest = stations.first else {
+            WidgetDataStore.clear()
+            return
+        }
+
+        let lines = nearest.lineArrivals.map { arrival in
+            NearestStationSnapshot.Line(
+                id: arrival.line,
+                arrivals: Array(arrival.arrivals.prefix(3))
+            )
+        }
+
+        let snapshot = NearestStationSnapshot(
+            stationID: nearest.station.id,
+            stationName: nearest.station.name,
+            distance: nearest.distance,
+            lines: lines.sorted { lhs, rhs in
+                lhs.id.localizedCaseInsensitiveCompare(rhs.id) == .orderedAscending
+            },
+            lastUpdated: lastUpdated
+        )
+
+        WidgetDataStore.save(snapshot)
     }
 }

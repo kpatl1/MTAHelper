@@ -6,14 +6,87 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		A62D7E492EA074AF00075868 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A62D7E482EA074AF00075868 /* WidgetKit.framework */; };
+		A62D7E4B2EA074AF00075868 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A62D7E4A2EA074AF00075868 /* SwiftUI.framework */; };
+		A62D7E5C2EA074B100075868 /* NearestStationWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = A62D7E462EA074AF00075868 /* NearestStationWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		A62D7E5A2EA074B100075868 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A62D7D022EA050F300075868 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A62D7E452EA074AF00075868;
+			remoteInfo = NearestStationWidgetExtension;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		A62D7E5D2EA074B100075868 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				A62D7E5C2EA074B100075868 /* NearestStationWidgetExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		A62D7D0A2EA050F300075868 /* mtahelper.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = mtahelper.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A62D7E462EA074AF00075868 /* NearestStationWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = NearestStationWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		A62D7E482EA074AF00075868 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
+		A62D7E4A2EA074AF00075868 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
+		A62D7E702EA077BF00075868 /* NearestStationWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = NearestStationWidgetExtension.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		A62D7E632EA0761C00075868 /* Exceptions for "mtahelper" folder in "NearestStationWidgetExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Models/ServiceAlert.swift,
+				Models/Station.swift,
+				Resources/stop_parent.json,
+				Resources/subway_stations.json,
+				Services/AlertService.swift,
+				Services/LocationService.swift,
+				Services/RealtimeService.swift,
+				Services/StationRepository.swift,
+				Shared/WidgetDataStore.swift,
+				Utilities/GTFSRealtimeParser.swift,
+				Utilities/LineAppearance.swift,
+				Utilities/MTAFeed.swift,
+			);
+			target = A62D7E452EA074AF00075868 /* NearestStationWidgetExtension */;
+		};
+		A62D7F002EA0800000075868 /* Exceptions for "NearestStationWidget" folder in "NearestStationWidgetExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = A62D7E452EA074AF00075868 /* NearestStationWidgetExtension */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		A62D7D0C2EA050F300075868 /* mtahelper */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				A62D7E632EA0761C00075868 /* Exceptions for "mtahelper" folder in "NearestStationWidgetExtension" target */,
+			);
 			path = mtahelper;
+			sourceTree = "<group>";
+		};
+		A62D7E4C2EA074AF00075868 /* NearestStationWidget */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				A62D7F002EA0800000075868 /* Exceptions for "NearestStationWidget" folder in "NearestStationWidgetExtension" target */,
+			);
+			path = NearestStationWidget;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -26,13 +99,25 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		A62D7E432EA074AF00075868 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A62D7E4B2EA074AF00075868 /* SwiftUI.framework in Frameworks */,
+				A62D7E492EA074AF00075868 /* WidgetKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
 		A62D7D012EA050F300075868 = {
 			isa = PBXGroup;
 			children = (
+				A62D7E702EA077BF00075868 /* NearestStationWidgetExtension.entitlements */,
 				A62D7D0C2EA050F300075868 /* mtahelper */,
+				A62D7E4C2EA074AF00075868 /* NearestStationWidget */,
+				A62D7E472EA074AF00075868 /* Frameworks */,
 				A62D7D0B2EA050F300075868 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -41,8 +126,18 @@
 			isa = PBXGroup;
 			children = (
 				A62D7D0A2EA050F300075868 /* mtahelper.app */,
+				A62D7E462EA074AF00075868 /* NearestStationWidgetExtension.appex */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		A62D7E472EA074AF00075868 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				A62D7E482EA074AF00075868 /* WidgetKit.framework */,
+				A62D7E4A2EA074AF00075868 /* SwiftUI.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -55,10 +150,12 @@
 				A62D7D062EA050F300075868 /* Sources */,
 				A62D7D072EA050F300075868 /* Frameworks */,
 				A62D7D082EA050F300075868 /* Resources */,
+				A62D7E5D2EA074B100075868 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				A62D7E5B2EA074B100075868 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				A62D7D0C2EA050F300075868 /* mtahelper */,
@@ -69,6 +166,28 @@
 			productName = mtahelper;
 			productReference = A62D7D0A2EA050F300075868 /* mtahelper.app */;
 			productType = "com.apple.product-type.application";
+		};
+		A62D7E452EA074AF00075868 /* NearestStationWidgetExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A62D7E612EA074B100075868 /* Build configuration list for PBXNativeTarget "NearestStationWidgetExtension" */;
+			buildPhases = (
+				A62D7E422EA074AF00075868 /* Sources */,
+				A62D7E432EA074AF00075868 /* Frameworks */,
+				A62D7E442EA074AF00075868 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				A62D7E4C2EA074AF00075868 /* NearestStationWidget */,
+			);
+			name = NearestStationWidgetExtension;
+			packageProductDependencies = (
+			);
+			productName = NearestStationWidgetExtension;
+			productReference = A62D7E462EA074AF00075868 /* NearestStationWidgetExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
 
@@ -81,6 +200,9 @@
 				LastUpgradeCheck = 2600;
 				TargetAttributes = {
 					A62D7D092EA050F300075868 = {
+						CreatedOnToolsVersion = 26.0.1;
+					};
+					A62D7E452EA074AF00075868 = {
 						CreatedOnToolsVersion = 26.0.1;
 					};
 				};
@@ -100,12 +222,20 @@
 			projectRoot = "";
 			targets = (
 				A62D7D092EA050F300075868 /* mtahelper */,
+				A62D7E452EA074AF00075868 /* NearestStationWidgetExtension */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		A62D7D082EA050F300075868 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A62D7E442EA074AF00075868 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -122,7 +252,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		A62D7E422EA074AF00075868 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		A62D7E5B2EA074B100075868 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A62D7E452EA074AF00075868 /* NearestStationWidgetExtension */;
+			targetProxy = A62D7E5A2EA074B100075868 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		A62D7D132EA050F400075868 /* Debug */ = {
@@ -249,14 +394,18 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = mtahelper/mtahelper.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = U5LM9H49V4;
 				ENABLE_PREVIEWS = YES;
-			GENERATE_INFOPLIST_FILE = YES;
-			INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Your location is used to surface nearby subway lines and live arrival times.";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Your location is used to surface nearby subway lines and live arrival times.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UIRequiresFullScreen = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -266,6 +415,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = kishan.mtahelper;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
@@ -281,14 +431,18 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = mtahelper/mtahelper.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = U5LM9H49V4;
 				ENABLE_PREVIEWS = YES;
-			GENERATE_INFOPLIST_FILE = YES;
-			INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Your location is used to surface nearby subway lines and live arrival times.";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Your location is used to surface nearby subway lines and live arrival times.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UIRequiresFullScreen = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -298,9 +452,70 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = kishan.mtahelper;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		A62D7E5E2EA074B100075868 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = NearestStationWidgetExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = U5LM9H49V4;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = NearestStationWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = NearestStationWidget;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = kishan.mtahelper.NearestStationWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		A62D7E5F2EA074B100075868 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = NearestStationWidgetExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = U5LM9H49V4;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = NearestStationWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = NearestStationWidget;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = kishan.mtahelper.NearestStationWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
@@ -325,6 +540,15 @@
 			buildConfigurations = (
 				A62D7D162EA050F400075868 /* Debug */,
 				A62D7D172EA050F400075868 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A62D7E612EA074B100075868 /* Build configuration list for PBXNativeTarget "NearestStationWidgetExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A62D7E5E2EA074B100075868 /* Debug */,
+				A62D7E5F2EA074B100075868 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
