@@ -134,7 +134,9 @@ struct NearestStationWidgetEntryView: View {
     }
 
     private func arrivalText(for line: NearestStationSnapshot.Line, limit: Int) -> String {
-        let arrivals = Array(line.arrivals.prefix(limit))
+        let now = Date()
+        let futureArrivals = line.arrivals.filter { $0 >= now.addingTimeInterval(-30) }
+        let arrivals = Array(futureArrivals.prefix(limit))
         guard !arrivals.isEmpty else {
             return "No arrivals"
         }
@@ -143,7 +145,17 @@ struct NearestStationWidgetEntryView: View {
         formatter.unitsStyle = .abbreviated
 
         let snippets = arrivals.map { arrival -> String in
-            formatter.localizedString(for: arrival, relativeTo: Date())
+            let delta = arrival.timeIntervalSince(now)
+            if abs(delta) <= 30 {
+                return "Now"
+            }
+            if delta < 0 {
+                return "Departed"
+            }
+            if delta < 90 {
+                return "in 1m"
+            }
+            return formatter.localizedString(for: arrival, relativeTo: now)
         }
 
         return snippets.joined(separator: ", ")
@@ -175,9 +187,14 @@ struct NearestStationWidgetEntryView: View {
     }
 
     private func relativeString(for date: Date) -> String {
+        let now = Date()
+        let delta = now.timeIntervalSince(date)
+        if delta < 60 {
+            return "just now"
+        }
         let formatter = RelativeDateTimeFormatter()
         formatter.unitsStyle = .short
-        return formatter.localizedString(for: date, relativeTo: Date())
+        return formatter.localizedString(for: date, relativeTo: now)
     }
 
     private func lineBadge(for line: String, compact: Bool) -> some View {
@@ -212,6 +229,7 @@ struct NearestStationWidgetEntryView: View {
 
 struct RefreshNearestStationIntent: AppIntent {
     static var title: LocalizedStringResource = "Refresh Nearest Station"
+    static var openAppWhenRun: Bool = false
 
     func perform() async throws -> some IntentResult {
         WidgetCenter.shared.reloadTimelines(ofKind: NearestStationWidget.kind)

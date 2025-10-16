@@ -45,16 +45,18 @@ final class SubwayDashboardViewModel: ObservableObject {
 
     init(
         locationService: LocationService? = nil,
-        stationRepository: StationRepository = .shared,
-        realtimeService: RealtimeService = RealtimeService(),
-        alertService: AlertService = AlertService()
+        stationRepository: StationRepository? = nil,
+        realtimeService: RealtimeService? = nil,
+        alertService: AlertService? = nil
     ) {
-        let locationService = locationService ?? LocationService()
-        self.locationService = locationService
-        self.stationRepository = stationRepository
-        self.realtimeService = realtimeService
-        self.alertService = alertService
-        self.authorizationStatus = locationService.authorizationStatus
+        let resolvedLocationService = locationService ?? LocationService()
+        let resolvedRepository = stationRepository ?? StationRepository.shared
+
+        self.locationService = resolvedLocationService
+        self.stationRepository = resolvedRepository
+        self.realtimeService = realtimeService ?? RealtimeService(stationRepository: resolvedRepository)
+        self.alertService = alertService ?? AlertService()
+        self.authorizationStatus = resolvedLocationService.authorizationStatus
     }
 
     deinit {
@@ -94,10 +96,11 @@ final class SubwayDashboardViewModel: ObservableObject {
 
                 let activeAlerts = alerts.filter { $0.isActiveNow }
                 var relevantAlertSet: Set<ServiceAlert> = []
+                let repository = stationRepository
 
                 let decorated = realtime.map { stationRealtime -> StationRealtime in
                     let stationParentAlerts = activeAlerts.filter { alert in
-                        let parentIDs = stationRepository.parentStationIDs(for: alert.stops)
+                        let parentIDs = repository.parentStationIDs(for: alert.stops)
                         return parentIDs.contains(stationRealtime.station.id)
                     }
                     relevantAlertSet.formUnion(stationParentAlerts)
@@ -169,7 +172,9 @@ private extension SubwayDashboardViewModel {
             while !Task.isCancelled {
                 try? await Task.sleep(for: .seconds(60))
                 guard let self else { break }
-                await self.updateRelativeTimestamp()
+                await MainActor.run {
+                    self.updateRelativeTimestamp()
+                }
             }
         }
     }
@@ -181,7 +186,9 @@ private extension SubwayDashboardViewModel {
             while !Task.isCancelled {
                 try? await Task.sleep(for: .seconds(60))
                 guard let self else { break }
-                await self.refresh(silently: true)
+                await MainActor.run {
+                    self.refresh(silently: true)
+                }
             }
         }
     }
@@ -249,10 +256,11 @@ private extension SubwayDashboardViewModel {
             return
         }
 
-        let lines = nearest.lineArrivals.map { arrival in
-            NearestStationSnapshot.Line(
+        let lines: [NearestStationSnapshot.Line] = nearest.lineArrivals.map { arrival in
+            let upcoming = arrival.arrivals.filter { $0 >= lastUpdated.addingTimeInterval(-30) }
+            return NearestStationSnapshot.Line(
                 id: arrival.line,
-                arrivals: Array(arrival.arrivals.prefix(3))
+                arrivals: Array(upcoming.prefix(3))
             )
         }
 
