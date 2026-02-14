@@ -4,11 +4,10 @@ MTA Helper is a SwiftUI application that surfaces nearby New York City subway st
 
 ## Features
 
-- **Location-aware station discovery** – The app requests the rider's current location, handles the various Core Location authorization flows, and continuously updates as permission changes.【F:mtahelper/mtahelper/Services/LocationService.swift†L24-L102】 Nearby stations are identified with a configurable radius and fallbacks when no stops are in range.【F:mtahelper/mtahelper/Services/StationRepository.swift†L30-L97】
+- **Location-aware station discovery** – The app requests the rider's current location, handles the various Core Location authorization flows, and continuously updates as permission changes.【F:mtahelper/mtahelper/Services/LocationService.swift†L24-L102】 Nearby stations are identified with a configurable radius and fallbacks when no stops are in range.
 - **Real-time arrivals** – The `RealtimeService` downloads the appropriate GTFS feeds for the lines that serve the nearby stations, parses the protobuf payload, and returns the next arrivals per line.【F:mtahelper/mtahelper/Services/RealtimeService.swift†L23-L104】【F:mtahelper/mtahelper/Utilities/GTFSRealtimeParser.swift†L9-L123】
 - **Service alert integration** – Current subway alerts are fetched, decoded, and merged into the station and line presentation so riders can see relevant advisories alongside countdowns.【F:mtahelper/mtahelper/Services/AlertService.swift†L23-L83】【F:mtahelper/mtahelper/ViewModels/SubwayDashboardViewModel.swift†L70-L123】
-- **Polished SwiftUI dashboard** – The main view renders station cards, line rows, refresh affordances, and empty states tailored to the data phase, with auto-refresh and relative timestamp updates managed by the view model.【F:mtahelper/mtahelper/Views/SubwayDashboardView.swift†L14-L196】【F:mtahelper/mtahelper/ViewModels/SubwayDashboardViewModel.swift†L43-L187】
-
+- **Polished SwiftUI dashboard** – The main view renders station cards, line rows, refresh affordances, and empty states tailored to the data phase, with auto-refresh and relative timestamp updates managed by the view model.
 ## Project structure
 
 ```
